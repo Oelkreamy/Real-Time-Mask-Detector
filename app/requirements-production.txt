@@ -1,0 +1,11 @@
+# Production requirements with PyTorch and OpenCV
+fastapi>=0.100.0
+uvicorn[standard]>=0.20.0
+python-multipart>=0.0.6
+Pillow>=9.0.0
+opencv-python-headless>=4.5.0  # Headless version for servers
+numpy>=1.21.0
+torch>=2.0.0 --index-url https://download.pytorch.org/whl/cpu
+torchvision>=0.15.0 --index-url https://download.pytorch.org/whl/cpu
+python-dotenv>=1.0.0
+requests>=2.28.0
