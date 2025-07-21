@@ -1,7 +1,0 @@
-# Demo version requirements (lighter, no PyTorch)
-fastapi>=0.100.0
-uvicorn[standard]>=0.20.0
-python-multipart>=0.0.6
-Pillow>=9.0.0
-numpy>=1.21.0
-python-dotenv>=1.0.0
