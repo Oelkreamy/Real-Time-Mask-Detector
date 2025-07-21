@@ -1,0 +1,10 @@
+# Minimal requirements for FastAPI Mask Detection API
+fastapi
+uvicorn[standard]
+python-multipart
+Pillow
+opencv-python
+numpy
+torch
+torchvision
+python-dotenv
