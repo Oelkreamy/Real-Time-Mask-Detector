@@ -31,12 +31,12 @@ RUN mkdir -p model/weights model/config
 # Set Python path
 ENV PYTHONPATH=/app
 
-# Expose the port
-EXPOSE 8000
+# Expose the port (Render will use PORT env variable)
+EXPOSE $PORT
 
-# Health check
+# Health check (use PORT env variable)
 HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
+    CMD curl -f http://localhost:${PORT:-10000}/health || exit 1
 
-# Command to run the application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Command to run the production application (Render will set PORT env variable)
+CMD uvicorn app.main_production:app --host 0.0.0.0 --port ${PORT:-10000}
