@@ -66,12 +66,48 @@ MODEL_CONFIG = {
 }
 
 def download_model_weights(url: str, local_path: str) -> bool:
-    """Download model weights from cloud storage"""
+    """Download model weights from cloud storage with Google Drive virus warning bypass"""
     try:
         logger.info(f"Downloading model weights from {url}")
         
-        response = requests.get(url, stream=True, timeout=300)
+        # Handle Google Drive direct download URLs
+        if 'drive.google.com' in url and 'uc?export=download' in url:
+            # Extract file ID from Google Drive URL
+            file_id = url.split('id=')[1].split('&')[0]
+            # Use the direct download URL that bypasses virus warning
+            download_url = f"https://drive.google.com/uc?export=download&id={file_id}&confirm=t"
+            logger.info(f"Using Google Drive bypass URL for file ID: {file_id}")
+        else:
+            download_url = url
+        
+        # First request to get the file
+        session = requests.Session()
+        response = session.get(download_url, stream=True, timeout=300)
+        
+        # Check if we hit the virus warning page
+        if response.status_code == 200 and 'text/html' in response.headers.get('content-type', ''):
+            # This is likely the virus warning page, try to get the confirm token
+            logger.info("Detected Google Drive virus warning, attempting bypass...")
+            
+            # Look for download confirmation in the HTML
+            content = response.text
+            if 'download_warning' in content:
+                # Extract the confirm token and try again
+                import re
+                confirm_match = re.search(r'name="confirm" value="([^"]+)"', content)
+                if confirm_match:
+                    confirm_token = confirm_match.group(1)
+                    bypass_url = f"https://drive.google.com/uc?export=download&id={file_id}&confirm={confirm_token}"
+                    logger.info(f"Using confirm token: {confirm_token}")
+                    response = session.get(bypass_url, stream=True, timeout=300)
+        
         response.raise_for_status()
+        
+        # Verify we're getting a binary file, not HTML
+        content_type = response.headers.get('content-type', '')
+        if 'text/html' in content_type:
+            logger.error("Still receiving HTML instead of binary file")
+            return False
         
         # Create directory if it doesn't exist
         os.makedirs(os.path.dirname(local_path), exist_ok=True)
@@ -88,6 +124,18 @@ def download_model_weights(url: str, local_path: str) -> bool:
                     if total_size > 0 and downloaded % (1024 * 1024 * 5) == 0:  # Log every 5MB
                         progress = (downloaded / total_size) * 100
                         logger.info(f"Download progress: {progress:.1f}%")
+        
+        # Verify the downloaded file is a valid PyTorch file
+        try:
+            with open(local_path, 'rb') as f:
+                # Check if it starts with PyTorch magic bytes (PK for zip-like structure)
+                magic = f.read(4)
+                if not magic.startswith(b'PK'):
+                    logger.error("Downloaded file doesn't appear to be a valid PyTorch model")
+                    return False
+        except Exception as e:
+            logger.error(f"Error verifying downloaded file: {e}")
+            return False
         
         logger.info(f"✅ Model weights downloaded successfully: {local_path}")
         return True
