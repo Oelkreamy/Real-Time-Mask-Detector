@@ -124,7 +124,7 @@ def load_model():
         # Load weights
         if os.path.exists(weights_path):
             logger.info(f"Loading weights from {weights_path}")
-            state = torch.load(weights_path, map_location=device)
+            state = torch.load(weights_path, map_location=device, weights_only=False)
             
             if isinstance(state, dict) and 'model_state_dict' in state:
                 model.load_state_dict(state['model_state_dict'])
