@@ -1,0 +1,35 @@
+lr: 0.01  # MUCH HIGHER - standard YOLO learning rate  
+batch_size: 8  # Increase for better gradient estimates with large dataset
+epochs: 100  # Reduce epochs since you have more data
+patience: 15  # Reduce patience
+optimizer: AdamW
+lr_scheduler: ReduceLROnPlateau
+lr_factor: 0.5  # Cut LR in half when stuck
+lr_patience: 8  # More patience before LR reduction
+min_lr: 0.0001  # Higher minimum LR
+weight_decay: 0.01  # Reduce weight decay - was too aggressive
+
+# Memory management - AGGRESSIVE
+mixed_precision: false  # Keep disabled for accuracy
+max_memory_usage: 0.85  # Use more memory efficiently
+clear_cache_every: 25  # Clear more frequently
+
+# Warmup and EMA - SIMPLIFIED
+warmup_epochs: 3  # Shorter warmup
+ema_decay: 0.9999  # Slightly less aggressive EMA
+
+# Regularization - REDUCED
+dropout_rate: 0.2  # Less dropout
+label_smoothing: 0.05  # Less label smoothing
+
+# Gradual unfreezing for better fine-tuning
+freeze_epochs: 20  # Train with frozen backbone for first 15 epochs
+unfreeze_lr_factor: 0.1  # Backbone LR = 0.1 * neck/head LR when unfrozen
+
+# Early stopping - MORE AGGRESSIVE
+early_stopping_metric: 'val_loss'
+early_stopping_patience: 15  # Stop faster
+
+# Model saving
+save_ema_weights: true
+save_dir: "model/weights/anti_overfit"

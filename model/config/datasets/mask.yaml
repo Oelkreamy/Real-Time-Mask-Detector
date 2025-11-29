@@ -1,14 +1,15 @@
 # Dataset Path
-path: ../../../face_mask_dataset
 
-train: images/train # relative to path
-train_labels: labels/train # relative to path
-val: images/val # relative to path
-val_labels: labels/val # relative to path
-test: images/test # relative to path
-test_labels: labels/test # relative to path
+path: ../../../face_mask_dataset6 # relative to this file
+
+train: train/images # relative to path
+train_labels: train/labels # relative to path
+val: valid/images # relative to path
+val_labels: valid/labels # relative to path
+test: test/images # relative to path
+test_labels: test/labels # relative to path
 
 names:
-  0: With mask
-  1: Without mask
-  2: Incorrect mask
+  0: incorrect_mask
+  1: with_mask
+  2: without_mask 

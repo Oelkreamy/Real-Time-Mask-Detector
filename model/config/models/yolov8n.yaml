@@ -50,5 +50,5 @@ head:
 
 loss_gains:
   cls: 0.5
-  iou: 7.5
-  dfl: 1.5
+  iou: 10
+  dfl: 2
