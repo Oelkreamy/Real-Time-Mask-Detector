@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: mask-detection-frontend
+    env: static
+    buildCommand: ""
+    staticPublishPath: .
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /mask_detection_web.html
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=3600
+      - path: /*
+        name: Access-Control-Allow-Origin
+        value: "*"
+      - path: "*.html"
+        name: Content-Type
+        value: text/html; charset=utf-8
+    envVars:
+      - key: API_BASE_URL
+        value: https://real-time-mask-detector.onrender.com
+      - key: ENVIRONMENT
+        value: production
