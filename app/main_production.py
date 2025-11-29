@@ -354,12 +354,12 @@ def draw_detections(image: Image.Image, detections, class_names: List[str]) -> n
             color, 
             -1
         )
-        
-        # Draw text
+
         cv2.putText(
             image_np, label, (x1, y1 - baseline - 2),
-            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1
-        )
+            cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), 2
+    )
+  
     
     return cv2.cvtColor(image_np, cv2.COLOR_BGR2RGB)
 
